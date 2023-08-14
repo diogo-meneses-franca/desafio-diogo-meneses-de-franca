@@ -35,6 +35,7 @@ class CaixaDaLanchonete {
         cardapioMap.set("combo1", 9.50)
         cardapioMap.set("combo2",7.50)
         return cardapioMap
+        
     }
     
     criaPedidoMap(pedidoList){
@@ -59,23 +60,22 @@ class CaixaDaLanchonete {
     //CHECA SE A QUANTIDADE 0(ZERO) FOI ATRIBUÍDA A ALGUM ITEM DO PEDIDO
     itemVazio(itensMap){
         let resposta = false
-        itensMap.forEach((key, value) =>{
-            if(key == 0){
+        for(const value of itensMap.values()){
+            if(value == 0){
                 resposta = true
             }
-        })
+        }
         return resposta
     }
 
     //CHECA SE ALGUM ITEM DO PEDIDO NÃO ESTÁ PRESENTE NO CARDÁPIO
     itemNaoExisteNoCardapio(cardapio, itensMap){
         let resposta = false
-        itensMap.forEach((key,value) =>{
-            
-            if(cardapio.has(value) == false){
+        for(const key of itensMap.keys()){
+            if(!cardapio.has(key)){
                 resposta = true
             }
-        })
+        }
         return resposta
     }
 
@@ -93,10 +93,10 @@ class CaixaDaLanchonete {
 
     calculaTotalDaCompra(cardapio, pedidoMap, metodoDePagamento){
         let total = 0
-        pedidoMap.forEach((key,value)=>{
-            console.log(`Key: ${key}, Value: ${value}`)
-            total += (key * cardapio.get(value))
-        })
+        for(const [key,value] of pedidoMap){
+            console.log(`Chave: ${key} Valor: ${value}`)
+            total += (value * cardapio.get(key))
+        }
         if(metodoDePagamento == "dinheiro" ){
             total = total - (total * 0.05)
         }else if(metodoDePagamento == "credito"){
