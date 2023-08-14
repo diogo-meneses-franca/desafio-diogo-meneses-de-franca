@@ -2,54 +2,48 @@ class CaixaDaLanchonete {
 
 
     calcularValorDaCompra(metodoDePagamento, itens) {
-        let pedidoMap = new Map()
-        let cardapio = new Map()
+        let pedido = this.criaPedidoMap(itens)
+        let cardapio = this.criarCardapioMap()
         let resultado
-        itens.forEach((item)=> {
-            let temporaria = item.split(",")
-            pedidoMap.set(temporaria[0], Number.parseInt(temporaria[1]))
-        })
         
-        cardapio.set("cafe", 3.00)
-        cardapio.set("chantily", 1.50)
-        cardapio.set("suco",6.20)
-        cardapio.set("sanduiche",6.50)
-        cardapio.set("queijo",2.00)
-        cardapio.set("salgado", 7.25)
-        cardapio.set("combo1", 9.50)
-        cardapio.set("combo2",7.50)
-
-        if(this.temPrincipal(pedidoMap)){
+        if(this.temPrincipal(pedido)){
             resultado =  "Item extra não pode ser pedido sem o principal"
-        }else if(pedidoMap.size == 0){
+        }else if(pedido.size == 0){
             resultado =  "Não há itens no carrinho de compra!"
-        }else if(this.itemVazio(pedidoMap)){
+        }else if(this.itemVazio(pedido)){
             resultado =  "Quantidade inválida!"
-        }else if(this.itemNaoExisteNoCardapio(cardapio, pedidoMap)){
+        }else if(this.itemNaoExisteNoCardapio(cardapio, pedido)){
             resultado =  "Item inválido!"
         }else if(this.formaDePagamentoAceita(metodoDePagamento)){
             resultado =  "Forma de pagamento inválida!"
         }else{
-            let total = this.calculaTotalDaCompra(cardapio, pedidoMap, metodoDePagamento)
+            let total = this.calculaTotalDaCompra(cardapio, pedido, metodoDePagamento)
             resultado = `R$ ${total.toFixed(2).replace(".", ",")}`      
         }
         return  resultado          
     }
 
-        
 
-    calculaTotalDaCompra(cardapio, pedidoMap, metodoDePagamento){
-        let total = 0
-        pedidoMap.forEach((key,value)=>{
-            console.log(`Key: ${key}, Value: ${value}`)
-            total += (key * cardapio.get(value))
+    criarCardapioMap(){
+        let cardapioMap = new Map
+        cardapioMap.set("cafe", 3.00)
+        cardapioMap.set("chantily", 1.50)
+        cardapioMap.set("suco",6.20)
+        cardapioMap.set("sanduiche",6.50)
+        cardapioMap.set("queijo",2.00)
+        cardapioMap.set("salgado", 7.25)
+        cardapioMap.set("combo1", 9.50)
+        cardapioMap.set("combo2",7.50)
+        return cardapioMap
+    }
+    
+    criaPedidoMap(pedidoList){
+        let pedidoMap = new Map()
+        pedidoList.forEach((item)=> {
+            let temporaria = item.split(",")
+            pedidoMap.set(temporaria[0], Number.parseInt(temporaria[1]))
         })
-        if(metodoDePagamento == "dinheiro" ){
-            total = total - (total * 0.05)
-        }else if(metodoDePagamento == "credito"){
-            total = total + (total * 0.03)
-        }
-        return total
+        return pedidoMap
     }
 
 
@@ -95,6 +89,20 @@ class CaixaDaLanchonete {
             }
         }
         return resposta
+    }
+
+    calculaTotalDaCompra(cardapio, pedidoMap, metodoDePagamento){
+        let total = 0
+        pedidoMap.forEach((key,value)=>{
+            console.log(`Key: ${key}, Value: ${value}`)
+            total += (key * cardapio.get(value))
+        })
+        if(metodoDePagamento == "dinheiro" ){
+            total = total - (total * 0.05)
+        }else if(metodoDePagamento == "credito"){
+            total = total + (total * 0.03)
+        }
+        return total
     }
     
     
